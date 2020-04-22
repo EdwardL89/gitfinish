@@ -51,8 +51,9 @@ fi
 
 # Add all the files for staging
 if [ -n "$(git status --porcelain)" ]; then
-  printf "Staging changes... \n\n"
+  printf "Staging changes... "
   git add .
+  printf "DONE\n\n"
 else
   echo "No changes to be staged. "
   exit 1
@@ -68,8 +69,9 @@ while true; do
 done
 
 # Commit all staged files with commit message
-printf "Committing changes... \n\n"
+printf "Committing changes... "
 commit_output=$(git commit -m "$commit_message" 2>&1)
+printf "DONE\n\n"
 # Show output if verbose is enabled
 if [ $verbose -eq 1 ]; then
     echo "$commit_output" # Avoid prinf as output characters might interfere with formatting
@@ -79,8 +81,9 @@ fi
 
 # Push all changes to the origin remote of the current branch
 current_branch=$(git symbolic-ref --short HEAD)
-printf "Pushing to current branch... \n\n"
+printf "Pushing to current branch... "
 push_output=$(git push origin $current_branch --porcelain 2>&1)
+printf "DONE\n\n"
 # Show output if verbose is enabled
 if [ $verbose -eq 1 ]; then
     echo "$push_output" # Avoid prinf as output characters might interfere with formatting
