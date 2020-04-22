@@ -1,0 +1,97 @@
+#!/bin/bash
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# Author: Edward Liu                                                           #
+# Created: 4/22/2020                                                           #
+#                                                                              #
+# If you find yourself constantly staging your changes, committing them to     #
+# the same branch, an pushing them to the same remote of the same branch while #
+# developing, this script will automate that entire process so that all you    #
+# need to do is type 'gitfinish' and enter your commit message.                #
+#                                                                              #
+# Be sure to add this script to your bin folder and that it has the execute    #
+# privilege using chmod u+x                                                    #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+# Determines if we need to output the results of the git commands
+verbose=0
+# Determines if we need to output the help message
+help=0
+
+# Error check and handle arguments
+if [ "$#" -gt 1 ]; then
+    printf "Too many arguments. "
+    echo "Use 'gitfinish -h' for help."
+    exit 1
+elif [ "$#" -eq 1 ]; then
+    if [ "$1" != "-v" -a "$1" != "-h" ]; then
+        printf "Invalid argument '$1'. "
+        echo "Use 'gitfinish -h' for help."
+        exit 1
+    elif [ "$1" == "-v" ]; then
+        verbose=1
+    else
+        help=1
+    fi
+fi
+
+# Display help message if -h option is included
+if [ $help -eq 1 ]; then
+    printf "\ngitfinish, version 1.0\n\n"
+    printf "usage: gitfinish [-v]|[-h]\n\n"
+    printf "This script stages all changes, commits and pushes them\n"
+    printf "to the current branch, all in one step! Run it by typing\n"
+    printf "'gitfinish' with the optional '-v' flag which returns a\n"
+    printf "verbose output of the git commit and git push commands.\n"
+    printf "You will then be prompted to enter a commit message. Once\n"
+    printf "you do so, hit enter, and your changes will be staged,\n"
+    printf "commited and pushed to the origin remote of the current branch.\n"
+    exit 1
+fi
+
+# Add all the files for staging
+if [ -n "$(git status --porcelain)" ]; then
+  printf "Staging changes... \n\n"
+  git add .
+else
+  echo "No changes to be staged. "
+  exit 1
+fi
+
+# Ask user for commit message and make sure it's not empty
+while true; do
+    read -p 'Commit message: ' commit_message
+    if [[ $commit_message =~ ^[0-9a-zA-Z]+$ ]]; then
+        break;
+    fi
+    echo "Commit message cannot be empty. "
+done
+
+# Commit all staged files with commit message
+printf "Committing changes... \n\n"
+commit_output=$(git commit -m "$commit_message" 2>&1)
+# Show output if verbose is enabled
+if [ $verbose -eq 1 ]; then
+    printf "${commit_output}\n\n"
+fi
+
+# Push all changes to the origin remote of the current branch
+current_branch=$(git symbolic-ref --short HEAD)
+printf "Pushing to current branch... \n\n"
+push_output=$(git push origin $current_branch --porcelain 2>&1)
+# Show output if verbose is enabled
+if [ $verbose -eq 1 ]; then
+    printf "${push_output}\n\n"
+fi
+
+# Show success message if successful
+if [[ $push_output == *"Done"* ]]; then
+    echo "SUCCESS"
+else
+    # Don't duplicate the output of a failed push
+    if [ $verbose -eq 0 ]; then
+        printf "${push_output}\n\n"
+    fi
+fi
+
+exit 1
