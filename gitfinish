@@ -72,7 +72,9 @@ printf "Committing changes... \n\n"
 commit_output=$(git commit -m "$commit_message" 2>&1)
 # Show output if verbose is enabled
 if [ $verbose -eq 1 ]; then
-    printf "${commit_output}\n\n"
+    echo "$commit_output" # Avoid prinf as output characters might interfere with formatting
+    echo ""
+    echo ""
 fi
 
 # Push all changes to the origin remote of the current branch
@@ -81,7 +83,9 @@ printf "Pushing to current branch... \n\n"
 push_output=$(git push origin $current_branch --porcelain 2>&1)
 # Show output if verbose is enabled
 if [ $verbose -eq 1 ]; then
-    printf "${push_output}\n\n"
+    echo "$push_output" # Avoid prinf as output characters might interfere with formatting
+    echo ""
+    echo ""
 fi
 
 # Show success message if successful
@@ -90,7 +94,9 @@ if [[ $push_output == *"Done"* ]]; then
 else
     # Don't duplicate the output of a failed push
     if [ $verbose -eq 0 ]; then
-        printf "${push_output}\n\n"
+        echo "$push_output" # Avoid prinf as output characters might interfere with formatting
+        echo ""
+        echo ""
     fi
 fi
 
