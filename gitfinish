@@ -61,7 +61,7 @@ fi
 # Ask user for commit message and make sure it's not empty
 while true; do
     read -p 'Commit message: ' commit_message
-    if [[ $commit_message =~ ^[0-9a-zA-Z]+$ ]]; then
+    if [[ ! -z "$commit_message" ]]; then
         break;
     fi
     echo "Commit message cannot be empty. "
@@ -86,7 +86,7 @@ fi
 
 # Show success message if successful
 if [[ $push_output == *"Done"* ]]; then
-    echo "SUCCESS"
+    printf "\nSUCCESS"
 else
     # Don't duplicate the output of a failed push
     if [ $verbose -eq 0 ]; then
