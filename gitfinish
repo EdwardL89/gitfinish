@@ -83,7 +83,6 @@ fi
 current_branch=$(git symbolic-ref --short HEAD)
 printf "Pushing to current branch... "
 push_output=$(git push origin $current_branch --porcelain 2>&1)
-printf "DONE\n\n"
 # Show output if verbose is enabled
 if [ $verbose -eq 1 ]; then
     echo "$push_output" # Avoid prinf as output characters might interfere with formatting
@@ -93,6 +92,7 @@ fi
 
 # Show success message if successful
 if [[ $push_output == *"Done"* ]]; then
+    printf "DONE\n\n"
     printf "\nSUCCESS"
 else
     # Don't duplicate the output of a failed push
