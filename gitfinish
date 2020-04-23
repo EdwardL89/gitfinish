@@ -92,8 +92,7 @@ fi
 
 # Show success message if successful
 if [[ $push_output == *"Done"* ]]; then
-    printf "DONE\n\n"
-    printf "\nSUCCESS"
+    printf "\nDONE\n"
 else
     # Don't duplicate the output of a failed push
     if [ $verbose -eq 0 ]; then
