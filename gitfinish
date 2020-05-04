@@ -102,4 +102,16 @@ else
     fi
 fi
 
+# Show success message if successful
+if [[ $push_output == *"rejected"* ]]; then
+    # Don't duplicate the output of a failed push
+    if [ $verbose -eq 0 ]; then
+        echo "$push_output" # Avoid prinf as output characters might interfere with formatting
+        echo ""
+        echo ""
+    fi
+else
+    printf "\nDONE\n"
+fi
+
 exit 1
