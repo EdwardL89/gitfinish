@@ -91,7 +91,7 @@ if [ $verbose -eq 1 ]; then
 fi
 
 # Show success message if successful
-if [[ $push_output == *"rejected"* -o $push_output == *"fatal"* ]]; then
+if [[ $push_output == *"rejected"* || $push_output == *"fatal"* ]]; then
     # Don't duplicate the output of a failed push
     if [ $verbose -eq 0 ]; then
         echo "$push_output" # Avoid prinf as output characters might interfere with formatting
